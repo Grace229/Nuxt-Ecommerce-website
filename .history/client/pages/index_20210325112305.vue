@@ -51,7 +51,7 @@
                        </div>
                        <div class="row">
                          <div class="col-sm-7">
-                           <div class="a-row a-spacing-none">
+              sssss             <div class="a-row a-spacing-none">
                              <a href="#" class="a-link-normal a-text-normal">Hardcover</a>
                            </div>
                            <!-- Price -->

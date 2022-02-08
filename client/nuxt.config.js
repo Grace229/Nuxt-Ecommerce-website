@@ -86,7 +86,8 @@ export default {
         endpoints: {
           login: {
             propertyName: "token"
-          }
+          },
+          logout: true
         }
       }
     }

@@ -56,7 +56,7 @@
                                <div class="a-row a-spacing-top-medium">
                                    <label class="choosefile-button">
                                        <i class="fal fa-plus"></i>
-     <input type="file" @change="onFileSelected">
+                                       <input type="file" @change="onFileSelected">
                                     
                                    </label>
                                     <p class="width" >Name of photo</p>

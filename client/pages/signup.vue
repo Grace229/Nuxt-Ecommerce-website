@@ -5,7 +5,7 @@
                 <div class="col-sm-4"></div>
                 <div class="col sm-4">
                    <div class="text-center">
-                       <a href=""><img src="/img/logo-black.png"></a>
+                       <nuxt-link to="/"><img src="/img/logo-black.png"></nuxt-link>
                    </div>
                    <form class="mt-4">
                        <div class="a-spacing a-spacing-extra-large">
@@ -14,19 +14,19 @@
                                <!-- Your Name -->
                                <div class="a-row a-spacing-base">
                                    <label for="ap_customer_name" class="a-form-label">Your name</label>
-                                   <input type="text" id="ap_customer_name"
+                                   <input type="text" id="ap_customer_name" v-model="name"
                                     class="a-input-text form-control auth-autofocus auth-required-field auth-contact-verification-request-info" />
                                </div>
                                 <!-- Your Email-->
                                <div class="a-row a-spacing-base">
                                    <label for="ap_customer_name" class="a-form-label">Email</label>
-                                   <input type="email" id="ap_customer_name"
+                                   <input type="email" id="ap_customer_name" v-model="email"
                                     class="a-input-text form-control auth-autofocus auth-required-field auth-contact-verification-request-info" />
                                </div>
                                 <!-- Your Password -->
                                <div class="a-row a-spacing-base">
                                    <label for="ap_customer_name" class="a-form-label">Password</label>
-                                   <input type="password" id="ap_customer_name"
+                                   <input type="password" id="ap_customer_name" v-model="password"
                                     class="a-input-text form-control auth-autofocus auth-required-field auth-contact-verification-request-info" />
                                     <div class="a-alert-container">
                                         <div class="a-alert-content"> password must be atleast 6 characters</div>
@@ -34,9 +34,9 @@
                                </div>
                                <!-- button -->
                                <div class="a-row a-spacing-extra-large mb-4">
-                                    <span class="a-button-primary">
+                                    <span class="a-button-primary" >
                                       <span class="a-button-inner">
-                                          <span class="a-button-text">Create Your Amazon Account</span>
+                                          <span class="a-button-text" @click="onSignUp">Create Your Amazon Account</span>
                                       </span>
                                   </span>
                                   <div class="a-row a-spacing-top-medium a-size-small">
@@ -64,6 +64,39 @@
 </template>
 <script>
 export default {
-    layout: "none"
+    middleware: "auth",
+    auth: "guest",
+    layout: "none",
+    data(){
+        return{
+            name: "",
+            email: "",
+            password: ""
+        }
+    },
+    methods:{
+async onSignUp(){
+    try {
+      let data = {
+          name: this.name,
+          email: this.email,
+          password: this.password
+      }  
+         let response = await this.$axios.$post("/api/auth/signup", data)
+         console.log(response)
+         if(response.success){
+             this.$auth.loginWith("local", {
+                 data: {
+                     email: this.email,
+                     password: this.password
+                 }
+             });
+             this.$router.push("/")
+         }
+    } catch (error) {
+        console.log(error)
+    }
+}
+    }
 }
 </script>
