@@ -7,11 +7,11 @@
         <ul class="a-unordered-list a-horizontal a-size-small">
           <li>
             <span class="a-list-item">
-              <a class="a-link-normal a-color-tertiary" href="#">{{ product.category.type }}</a>
+              <a class="a-link-normal a-color-tertiary" href="#">{{ product.categoryID.type }}</a>
             </span>
           </li>
           <li>
-            <span class="a-list-item">></span>
+            <span class="a-list-item"></span>
           </li>
           <li>
             <span class="a-list-item">
@@ -44,14 +44,14 @@
                     <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-3">
                       <div class="smallAuthorImageContainer">
                         <a href="#">
-                          <img :src="product.owner.photo" class="img-fluid" />
+                          <img :src="product.ownerID.photo" class="img-fluid" />
                         </a>
                       </div>
                     </div>
                     <!-- Author's Name -->
                     <div class="col-xl-4 col-lg-3 col-md-3 col-sm-3 col-3">
                       <div class="authorNameCol">
-                        <a href="#">{{product.owner.name}}</a>
+                        <a href="#">{{product.ownerID.name}}</a>
                       </div>
                     </div>
                     <!-- Author's Follow Button -->
@@ -77,7 +77,7 @@
               <!-- Product Title -->
               <div class="titleDiv">
                 <h1 class="productTitle">
-                  <span class="largeTitle">{{product.title}}r</span>
+                  <span class="largeTitle">{{ product.title }}</span>
                   <span class="smallTitle">Paperback</span>
                 </h1>
               </div>
@@ -85,14 +85,28 @@
               <div class="bylineinfo">
                 by
                 <a href="#" class="authorName">
-                  {{product.owner.name}}
+                  {{product.ownerID.name}}
                   <i
                     class="fas fa-chevron-down"
                     style="font-size: 8px !important; color: #555 !important;"
                   ></i>
                 </a> (Author)
               </div>
-              <div class="reviewGroup"></div>
+              <div class="reviewGroup">
+                           <no-ssr>
+                             <star-rating :rating="product.averageRating" 
+                             :show-rating="false" 
+                             :glow="1" 
+                             :border-width="1"
+                             :rounded-corner="true"
+                             :read-only="true"
+                             :star-size="18"
+                             :star-points="[23,2,14,17,0,19,10,34,7,50,23,43,38,50,36,34,46,19,31,17]"
+                             >
+
+                             </star-rating>
+                           </no-ssr>
+              </div>
               <hr style="margin-top: 10px;" />
               <!-- A tags Dummy Data -->
               <div class="mediaMatrix">
@@ -176,7 +190,7 @@
               </div>
               <!-- Description -->
               <div class="bookDescription">
-                <div class="bookDescriptionInner">{{product.description}}/div>
+                <div class="bookDescriptionInner">{{product.description}}</div>
               </div>
 
               <!-- Product specification -->
@@ -241,7 +255,7 @@
                   <div class="a-section a-spacing-none">
                     <span class="a-size-medium a-color-success">In Stock</span>
                   </div>
-                  <div class="a-section a-spacing-mini">Shipts from and sold by Amazon.com</div>
+                  <div class="a-section a-spacing-mini">Ships from and sold by Amazon.com</div>
                 </div>
 
                 <div class="a-section">
@@ -268,7 +282,7 @@
                   <div class="a-spacing-top-small">
                     <div class="a-section a-spacing-none">
                       <div class="a-section a-spacing-none a-spacing-top-mini">
-                        This item shipts to
+                        This item ships to
                         <b>California</b>
                         <b>Get it by Monday, Sept 23 - Monday, Sept. 30</b>
                         Choose this date at checkout
@@ -320,7 +334,7 @@
                   <div class="authorContent">
                     <div class="authorImageSingle">
                       <a href="#">
-                        <img src="/img/featuredProduct.jpg" class="img-fluid" />
+                        <img :src="product.ownerID.photo" class="img-fluid" />
                       </a>
                     </div>
                     <div class="authorFollow">
@@ -335,27 +349,40 @@
                 <div class="col-md-10 col-sm-8 col-8 pl-0">
                   <div class="mainContent">
                     <h3>Biography</h3>
-                    <div id="authorBio">My name is Walter White</div>
+                    <div id="authorBio">{{product.ownerID.about}}</div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        <ReviewSection :product="product" :reviews="reviews"  />
       </div>
     </div>
-    </div>
   </main>
-</template> ,  
+</template> 
 <script>
+import StarRating from "vue-star-rating";
+import ReviewSection from "~/components/ReviewSection"
 export default {
-  async asyncData({ $axios }) {
+  components: {
+    ReviewSection,
+    StarRating
+  },
+  async asyncData({ $axios, params }) {
     try {
-      let response = await $axios.$get(`/api/products/${params.id}`)
-      console.log(response);
+      let singleProduct = $axios.$get(`/api/products/${params.id}`)
+      let manyReviews = $axios.$get(`/api/reviews/${params.id}`)
+      
+      const[productResponse, reviewResponse] = await Promise.all([
+        singleProduct, manyReviews
+      ])
+      
       return{
-        product: response.product
+        product: productResponse.product,
+        reviews: reviewResponse.reviews
       }
+
     } catch (err) {
       console.log(err)
     }

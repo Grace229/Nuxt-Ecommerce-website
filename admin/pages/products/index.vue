@@ -10,28 +10,28 @@
                          <!-- Category dropdown -->
                             <div class="a-spacing-top-medium">
                                 <label for="Catd">Category</label>
-                                <select class="a-select-option">
+                                <select class="a-select-option" v-model="categoryID">
                                     <option v-for="category in categories" 
-                                    value="category._id"
+                                    :value="category._id"
                                      :key="category._id">{{ category.type }}</option>
                                    
                                 </select>
                             </div>
-
                                <!--Owner dropdown -->
                             <div class="a-spacing-top-medium">
                                 <label>Owner</label>
-                                <select class="a-select-option">
+                                <select class="a-select-option" v-model="ownerID">
                                     <option v-for="owner in owners"
-                                     value="owner._id" 
+                                     :value="owner._id" 
                                     :key="owner._id">{{ owner.name }}</option>
                                    
                                 </select>
                             </div>
+                            {{ownerID}}
                             <!--title -->
                             <div class="a-spacing-top-medium">
                                 <label>Title</label>
-                                <input type="text" v-model="title" class="a-input-text width">
+                                <input tnype="text" v-model="title" class="a-input-text width">
                             </div>
                              <!--Price -->
                             <div class="a-spacing-top-medium">
@@ -59,7 +59,7 @@
                                        <input type="file" @change="onFileSelected">
                                     
                                    </label>
-                                    <p class="width" >Name of photo</p>
+                                    <p class="width" >{{fileName}}</p>
 
                                </div>
                             </div>
@@ -127,9 +127,9 @@ export default {
         data.append("stockQuantity", this.stockQuantity);
         data.append("categoryID", this.categoryID);
         data.append("photo", this.selectedFile, this.selectedFile.name);
-
         let result = await this.$axios.$post('http://localhost:8000/api/products', data);
         this.$router.push("/")
+        console.log(result)
     }
     }
 }
